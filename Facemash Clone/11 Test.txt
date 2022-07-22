@@ -1,0 +1,12 @@
+Output on screen
+0.3599500019711	//$expected = Game::expected(1550,1450)
+
+//This is expectation
+
+
+1465.35155	//$new_score = Game::win(1450, $expected);
+
+//this is new score
+
+
+1441.3615	//$new_score = Game::loss(1450, $expected);

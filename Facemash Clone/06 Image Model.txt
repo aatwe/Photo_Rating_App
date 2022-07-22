@@ -1,0 +1,25 @@
+Image.php
+
+class Image extends Model {
+
+   protected $table = 'images';
+	//games.php expects us to have table with name of games
+	//defining explicitly app wontbreak
+  //Specify what kind of parameters are most assignable
+
+  protected $fillable =  [
+	'title',
+	'filename'
+	'country'
+	//score win loss and rank are not user input so can be calculated at backend
+	//for now we will specify
+	'score',
+	'wins',
+	'losses'
+	'rank'
+//good practice to mention table columns in model
+coz then model can access it
+//since we are not updating filename title and country, and just the other below
+ALL We need is id
+based on previous wins and losses we will calculate new wins and losses and update ourself
+  ]

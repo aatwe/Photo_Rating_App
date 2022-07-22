@@ -1,0 +1,123 @@
+PHP Framework: Laravel
+1)
+create-project laravel/laravel Facemash2022 5.0 --prefer-dist
+
+//creates project
+//loads composer//install dependencies from composer
+//Application key will be shredded
+
+
+2) Go inside application
+>cd facemash2022
+>hosts
+//Add virtual host facemash2022.app			//setup hosts
+//source the host
+>sudo nano -/.bash_profile
+>sudo nano -/.bashrc
+
+3) get inside vagrant homestead box			//point route of public folder index.php to this host so it can be served to our host virtual address
+>vm
+>cd code
+>cd facemash2022
+>serve facemash2022.app /home/vagrant/code/facemash2022/public
+
+//How to check if application is listening to our host
+//port 8000
+browser -> facemash2022.app:8000
+//See screen Laravel 5 //like react
+//lot of application is downloaded and installed successfully
+
+4) Download facemash resources
+this contains images
+public ->img -> models
+we will start with these images
+
+5) PHP Storm IDE
+.env file->
+
+6) Make sure key is SAT 
+APP_ENV=local
+APP_DEBUG=true
+DB_DATABASE=facemash2022
+DB_USERNAME=homestead
+DB_PASSWORD=secret
+CACHE_DRIVER=file
+SESSION__DRIVER=file
+
+_______________________________________
+>vm  //get inside homestead
+>mysql -uhomestead -p
+//enter password
+
+mysql> create database facemash2022
+mysql>exit
+>clrscr
+
+_____________________________________________	
+							//Copy paste respective files in respective folder to maintain directory structure of application
+override public directory with extracted one if using 5.0
+	it contains css fonts images etc
+	js -> index.php
+
+index.php = needs autoload file(bootstrap.php) from bootstrap folder
+
+__________________________________________________________________________________
+
+resources -> views-> pages folder + app.blade.php
+
+paste it in your views folder -> overwrite
+
+___________________________________________________________________________________
+						//Delete 1 controller
+						//update one controller
+Setup routes
+Http folder -> routes.php
+
+//get rid of welcome control@index route
+also for home controller in routes.php
+
+Route::get('/', 'HomeController@index');
+
+
+
+
+
+Http folder -> Controllers -> Auth -> WelcomeController.php 	//also get rid of 
+Http folder -> Controllers -> Auth -> HomeController.php
+		//in home controller -> make sure to change it to guest or remove as below 
+
+$this->middleware('guest');
+return view('pages.home')
+
+the above links to below
+resources ->views-> pages -> home_blade.php
+
+________________________________________________________________________________________________
+Check back
+facemash2022.app:8000
+//we see homescreen
+partials.scripts not found
+
+
+why error?
+in resources -> views ->  no folder called 'partials ' present
+create new php file
+___________________________________________________________________________________________________________
+					//Add missing Partials script file
+Resources -> views -> Partials
+
+notifications.blade.php
+
+
+
+______________________________________________________________________________________
+scripts.blade.php
+Add below script
+//call all.js since it has jquery built in
+-----------------------------------------------------------------------------------
+<script type="test/javascript" src=""{{asset('js/all.js')}}> </script>
+-------------------------------------------------------------------------------------
+Go back reload -> Home page will open
+
+
+

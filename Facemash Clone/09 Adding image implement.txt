@@ -1,0 +1,20 @@
+what is  done till now?
+we created script in controller
+to upload images
+
+if no image read, we create one
+else
+we go back to view with error message
+image already exists indatabase
+
+we write continue to skip to next image
+
+++++++++++++++++++++++++++++++++++++
+Test
+1) Try saving an image
+2) Image is not currently in database
+	-> Run Upload
+
+3) check database , we will find one image extra
+
+ 

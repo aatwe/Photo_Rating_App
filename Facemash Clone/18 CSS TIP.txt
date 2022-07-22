@@ -1,0 +1,1 @@
+write all css in one fiel for projct use

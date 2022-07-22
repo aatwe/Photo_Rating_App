@@ -1,0 +1,167 @@
+Basically expected vs actual score determines change in rating
+After playing like 1 million games, actual vs expected score will be pretty much same
+//in the long run expectation and out come match
+
+elo calculated his chances of winning for every move
+
+
+outcomes in a game:
+win/lose/draw
+
+
+if win: we add 400 points.
+_______________________________________________________________________________________________
+you as a avg  player has range of abilities.Some day playing well some day not .
+Player 1 has a box of numbers(ability)(Weak)
+player 2 has a box of numbers(ability)(Strong)
+
+both pick 1-1 and highest one wins
+Strong player 2 picks from box of high no.He also has some day good some day bad
+both player form bell curve
+
+Just that
+centre of 2 is > centre of 1
+What is centre? = Avg = rating
+
+How to calculate probability of winning the game
+calculate frequency of difference in playing strength= Logistic curve
+The more is logistic curve to right, more is player likely to win 
+
+Elo rating system: 
+	if playe rhas rating > 400 then he is 10 times more likely to win
+		Area to the right of logistic curve = 10 (Area to the left of logistic curve)
+
+	if playe rhas rating > 800 -> he is 100 times more likely
+
+Probability:
+Pa(win) /Pb(win) = 10^(Ra -Rb)/400
+
+Pa(win) = 1 / [1 +  10^((Rb -Ra)/400)]
+________________________________________________________________________________________________________
+
+Algorithm:
+(basically
+1) predict outcome of game
+2) update rating )
+
+1) Give players a starting score of 1500
+2) if win/lose update score
+		 win in wins columns / loss in losses column
+3) Calculate rank from score
+
+if wins: player earns 1 point
+i loses: player loses 1 point
+draw = 50% chance of winning 50% losing : expected  score = 0.5
+
+What is expected score? Ea = Probability of A(Win)
+ 	predicts outcome of game
+			P(Winning) + 1/2*P(Drawing)
+	Ea = 0.75 -> 75 % chance of winning , 25% chance of losing , 0% chance of drawing
+		     50 % chance of winning ,  0% chance of losing  , 50% chance of drawing
+
+		
+	Ea = 1 / [1 + 10^((Rb - Ra)/400))]
+
+	Ea=b = 1 / [1 + 10^((Ra - Rb)/400)]
+	//if difference in rating bw 2 players is 400
+		
+
+
+Ea + Eb = 1
+
+
+Rank
+return $score/(1+ ($losses/ $wins)
+
+
+______________________________________________________________________________________________________
+What if player does better than expected? Their rating will increase
+More surprise more the points
+how to update player rating using expected score (Ea) , Actual Score(Sa)
+
+Updated rating = R'A = Old Rating + K(score - expected score) = Ra + K(Sa - Ea)		//K =32 for chess 
+//this is updated after each game/period
+Ex
+
+Player A = 1656
+Player B = 1763
+
+E(Player A Win) = 0.35
+E(Player B Win) = 0.65
+
+Player A wins -> i.e 1 point
+Player B loses -> 0 point
+
+Updated rating A = 1656 + 32(1 - 0.35) = 1677   (plus 24)
+Updated rating B = 1753 + 32(0 - 0.35) = 1741   (minus 11.2)
+
+If player does better than expected: rating increase
+if player does worse than expected: rating decrease
+if player does about as expected:    same rating
+matching strong vs weak has benifits
+over time player rating  = ability
+
+
+Ex.
+
+Player A Rating = 1613 plays tournament
+loss vs 1609
+draw vs 1477
+win vs  1 388
+win vs 1586
+lose vs 1720
+
+Actual score  of A after tournamnet = (0 + 0.5 + 1 + 1 + 0 ) = 2.5
+expected score(Using formula) =  (0.51 + 0.69+ + 0.7 + 0.54 +0.35) = 2.88
+
+
+_____________________________________________________________
+Applied Algo //I fimage 1 wins -> wins 1 point
+1) calculate expected score for both players ()function expected//we use same function for both(just switch order when calc for A and when for b)(1st one is for which calcing0
+2) calculated updated score for win 
+3) calculate updated score for loss
+//till now we have score, wins, losses //use this to calculate rank
+//we will rank our players using a formula
+4) Calculate rank for each player
+---------------------------------------------------------------
+
+
+Game.php
+//open your Game model
+
+protected $table = 'games;'
+protected $fillable = [
+   'winner',
+   'loser'
+]
+
+public static function expected($Rb, $Ra)
+{
+return 1/(1+ pow(10, ($Rb - $Ra)/ 400));
+}
+
+//Updated score after win
+public static function win($score, $expected ,$k = 24){
+	return ROUND($score + $k*(1 - $expected))
+}
+public static function loss($score, $expected ,$k = 24){
+	return ROUND($score + $k*(0 - $expected))
+}
+public static function rank($score ,$losses, $wins){	//we will calculate rank using these
+
+if(($score ==0) || ($losses ==0) || ($wins == 0))
+{
+	return 0;
+}
+	return ROUND( $score/(1+ ($losses/ $wins));	//issue if loss = 0 score = 0 wins = 0
+}
+}
+
+
+_______________________________
+Now we go back to imageController.php
+ index() {
+$expected = Game::expected(1550,1450)
+	dd($expected);
+
+}

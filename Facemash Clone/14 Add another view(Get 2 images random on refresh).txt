@@ -1,0 +1,159 @@
+1)
+Routes.php
+make sure game key is firing up ''Game controller'
+
+2) gamecontroller.php
+//index() method is run -> we click image -> Update method is run  -> contructor runs again -> query again and image will change
+
+
+use App\Http\Controllers\Controller;
+
+class GameController extends Controller
+{
+
+	public function __construct()
+		{
+			$this->middleware('guest');
+
+		}
+	public function index(){	
+	//Try to pull 2 images randomly and display on view
+		$limit= 2;
+		//how to order? run db raw query , picks 2 records randomly
+		$images = Image::orderby(DB::raw('RAND()')) -> take($limit)get();
+		if(count($images)) {
+			return view('pages.game', compact('images'));
+	}
+			//else if no images and people want to play -> redirect to images
+		return redirect('images');
+	}
+
+	public function create(){
+	
+	}
+
+____________________________________________________________________________________________________________________
+2) Create a view
+//open upload view
+resources -> uploade.blade.php
+copy code and save as game.blade.php
+
+//change 'title' to 'game'
+ 
+
+@section('title', 'Game | FaceMash v1.0')
+
+@section('content')
+
+@extends('app') ‘ ' "
+@section('tit1e', 'Game | FaceMash v1.0')
+@section('content')
+<div c1ass="home">
+	<div c1ass="container">	//we need a container
+		<div c1ass="row text-center vh—align">	//we need a row
+		//we create 
+				
+			<div c1ass="col—Ig—12 col—md—IZ col-sm-12 col—xs-12 margin-top-50">	//column 1
+			//we create 3 buttons to access other pages
+			<ul class="ul.list-inline.pull-right">		
+				<li class="active"><a href="{{url('game')}}" class= "btn btn-sm btn-green">Play Game</a> </li>
+				<li class="active"><a href="{{url('image/stats')}}" class= "btn btn-sm btn-green">View Statstics</a> </li>
+				<li class="active"><a href="{{url('share')}}" class= "btn btn-sm btn-green">Share</a> </li>
+			</ul>
+
+			<div c1ass="col—Ig—12 col—md—IZ col-sm-12 col—xs-12 margin-top-50">	//column 2
+			@if(count($images >=2)	//this is a collection
+				//Get the first image id in this form
+				//image id is random without any specific order
+			//By clicking we info on who is winner and who is loser
+			//How to find winner? last id is winner	
+			//click the first image, id is taken and posted to controller -> Image is winner(How is winer identified? by posting the id)
+			How to find loser?
+			By passing 2 values from hidden field
+				<div c1ass="col—Ig—6 col—md—IZ col-sm-6 col—xs-6 margin-top-50">
+					{!! Form::open(['method' => 'PATCH', 'action' =>['GameController@update', $images->first()->id], 
+						'class' => 'form-horizontal') !!}	
+					{!! !!}
+					<div class = "form-group">
+					//why are we displaying these 2fields?
+			//index() method is run -> we click image -> Update method is run  -> contructor runs again -> query again and image will change
+
+						<input type= "hidden"> class = "form control" name="winner" id="$images->first()->id" 					
+							value= "{{$images->first()->id}}"</input>	
+						<input type= "hidden"> class = "form control" name="loser" id="$images->last()->id" 					
+							value= "{{$images->last()->id}}"</input>	 
+					</div>
+		//Display the images  //div id left
+				<div id='left'.<animated class="bounceInLeft"> 
+					<a href='#'class="pickoption">
+					    <div class="view view-first"				
+						<img src="{{asset{'img/models/' .$images->first()-> filename)}}}" alt=""  width="600"
+							class="img-responsive">
+		//Get Rank of first image
+					<div class="mask"
+						<h2>Rank: {{$images->first()-> rank}}</h2>
+						<p class="lead">Her Bio is this</p>
+		//Inherit the background of table class//make background of table transperent by inheriting the background of image
+						<table class="table.table bg-inherit text-center">
+		//Display how many games won
+							<thead>	
+								<tr></tr>					
+							</thead>
+							<tbody>
+								<tr><td><span class="font120">Won: {{ $images->first()->wins }</span></td></tr>
+								<tr><td><span class="font120">Lost: {{ $images->first()->losses }</span></td></tr>
+								<tr><td><span class="font120">Score: {{ $images->first()->wins }</span></td></tr>
+//currently we are not storing expectation in database	 		<tr><td><span class="font120">Expectation: {{ $images->first()->---- }</span></td></tr>
+							</tbody>
+						</table>
+					</div>	
+					</div>
+					{!! Form::close() !!}			
+		</div>
+	<div c1ass="col—Ig—6 col—md—IZ col-sm-6 col—xs-6 margin-top-50">
+					{!! Form::open(['method' => 'PATCH', 'action' =>['GameController@update', $images->first()->id], 
+						'class' => 'form-horizontal') !!}	
+					{!! !!}
+					<div class = "form-group">
+					//why are we displaying these 2fields?
+			//index() method is run -> we click image -> Update method is run  -> contructor runs again -> query again and image will change
+
+						<input type= "hidden"> class = "form control" name="winner" id="$images->last()->id" 					
+							value= "{{$images->last()->id}}"</input>	
+						<input type= "hidden"> class = "form control" name="loser" id="$images->first()->id" 					
+							value= "{{$images->first()->id}}"</input>	 
+					</div>
+		//Display the images  //div id right
+				<div id='right'.<animated class="bounceInRight"> 
+					<a href='#'class="pickoption">
+					    <div class="view view-first"				
+						<img src="{{asset{'img/models/' .$images->last()-> filename)}}}" alt=""  width="600"
+							class="img-responsive">
+		//Get Rank of first image
+					<div class="mask"
+						<h2>Rank: {{$images->last()-> rank}}</h2>
+						<p class="lead">Her Bio is this</p>
+		//Inherit the background of table class//make background of table transperent by inheriting the background of image
+						<table class="table.table bg-inherit text-center">
+		//Display how many games won
+							<thead>	
+								<tr></tr>					
+							</thead>
+							<tbody>
+								<tr><td><span class="font120">Won: {{ $images->last()->wins }</span></td></tr>
+								<tr><td><span class="font120">Lost: {{ $images->last()->losses }</span></td></tr>
+								<tr><td><span class="font120">Score: {{ $images->last()->wins }</span></td></tr>
+//currently we are not storing expectation in database	 		<tr><td><span class="font120">Expectation: {{ $images->last()->---- }</span></td></tr>
+							</tbody>
+						</table>
+					</div>	
+					</div>
+					{!! Form::close() !!}			
+		</div>
+	@endif
+
+</div>
+</div>
+</div>
+</div> 
+</div>

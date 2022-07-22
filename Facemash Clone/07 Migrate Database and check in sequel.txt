@@ -1,0 +1,30 @@
+>pa migrate
+
+if face issue
+.env ->
+	DB_HOST = 192.168.10.10
+//Migration table created successfully
+
+create_users_table
+create_password_resets_table
+create_games_table
+create_images_table
+//all migrated
+
+
+
+How to check how our database looks like?
+Sequel pro
+connect  to homestead
+go to facemash2022  project 
+
+we will find tables as below:
+
+games -> columns as id , winner, loser,created_at, updated_at
+images-> title , filename,country,score,wins,losses,rank,created_at,updated_at
+migrations
+password_resets
+users
+
+
+ALL GOOD!

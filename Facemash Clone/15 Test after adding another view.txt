@@ -1,0 +1,54 @@
+Refresh
+
+i got 2 images from left and right on view
+hover on each to see won,lost,score
+also on top of image i see
+rank, "her bio is this" below
+
+
+Will it run on clicking? no, there is no update method code
+
+Every time we refresh we get 2 different images
+
+
+
+1) Right click inspect
+	we see game.php
+		we see a form
+		<form method="POST" action="http://facemash2016.app:8000/game/52">.....
+(form method-‘POST' actionu'http://faccmnsh2016.opp:8000/9030/52' accept-charac:-'U?F-8' claun-"form-horizontn1"><input nume-‘_ncthod' typo-'hiddan' value-"PATCH'><input name-"_tokcn' type-‘hiddon'
+
+<input typcu'biddcn' clans-"(ora-control' haze-"winner" idu'52" valucw'52'><linput>
+<input type-"hiddcn‘ class-"Zora-control' maze-"loser" id—"26' value-'26'><linput>
+</div>
+			
+		What is this form doing? using post method passing an id of image 52 and 26	//for currently visible images	
+									if you refresh these value change
+							The random shuffle must be unique 71^71 times
+In form 1
+		Which is the winner image? 52 
+		Which is loser?26
+In form 2
+		Which is the winner image? 26 
+		Which is loser?52
+	By clicking any 1 form we are passing nformation about both images
+
+___________________________________________________________________________________________
+How to make stats button work?
+
+1) Routes.php
+add another route
+
+Route::resource('images/stats','ImageController@stats');	//for the stats button
+
+2) Imagecontroller.php
+	Create new method called stats
+public function stats($){	//after adding stats button in file #15	
+			//What does stats do? give all  the images
+	$images = image::all();
+	return view('pages.stats', compact('images'));	//serve pages.stats and pass collection
+}
+
+
+What happens after adding another stat?
+We get all image in database with win loss and scores and "Not enough data to build ranking"

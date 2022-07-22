@@ -1,0 +1,49 @@
+1) Create a route
+route.php
+
+
+//Do Route model binding
+
+Route::model('images','App/Image');
+//when we click on image,the image data will be passed to route 
+data is then used by controller
+
+Route::resource('images/stats','ImageController@stats');	//for the stats button	//should come before resource
+
+Route::get('/','HomeController@index');
+
+
+//note it is registered as a resource ful route
+Route::resource('/images','ImageController');
+
+
+//we also need a gamecontroller
+Route::resource('game','GameController');
+____________________________________________________________________________
+
+2) Create controllers and model
+//Boilerplate
+
+>cd ..
+>cd~
+>cd code
+clear	
+//Goinsideapp
+>cd facemash2022
+//Create image controller
+>pa make:controller ImageController
+
+//create game controller
+>pa make:controller GameController
+
+//create a model game
+>pa make:model Game
+
+
+//create image model
+>pa make:model Image
+
+//create model
+>pa make:model Image
+// will display on success: Created Migration: 2022_05_18_100920_create_images_table
+________________________________________________________________________________________________________

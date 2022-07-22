@@ -1,0 +1,94 @@
+Till now we have 2 forms,
+click on one form . Where are 2 forms? game.play.php
+clicke image = winner
+	What happens when we click image? hidden id is sent back to server
+	
+
+UI Improvement: on saying winner -> click should come up
+
+
+Task: Create unordered list of top 6 players with
+	rank,losses,win
+______________________________________________________________________________________________________________________________________________________________________
+Che button
+Use built in larvel functionality
+give 1 email -> 2,3,4,5,6 -> by clicking class -> create dynamically forms using jquery -> add to array -> input name -> we send them a mail with token
+
+
+becuase there is no authentication we dont need token
+
+
+If authentication-> use token
+why use token? to make sure which user is coming
+we store the token against user id
+without logging in you can know which user is playing
+
+Anyone with the link and can just play
+_____________________________________________________________
+if we click left -> right side image will be winner
+if we click right -> left sid eimage will be winner
+
+1) Add Material theme for sidebar
+	Preferences -> Settings User
+		"theme": "Material-Theme.sublime-theme"	
+_______________________________________________________________________
+
+
+Execution:
+
+1) in game.blade.php
+Add a new row
+
+<div class ="row">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		@(ifcount($top6))	//if there is something in variable, run the unordered list
+		<ul class="list-inline">		//unordered list called list -inline	//What is input? variable from laravel 
+
+			@foreach($top6 as $image)	//loop over the variable
+			<li class="col-lg-2>
+			<p><strong>Rank: {{$image->rank}}</strong></p>	//in database we have rank column
+								///we get the rank of image from DB.
+						//Basically we get the rank from DB, image from image model and  append filename from DB
+			//Display the image
+			//Where is the image going from
+			<img src="{{ asset('img/models/' . $image->filename }}"> alt="" width= "150" class = "img-responsive">//append image variable and filename		
+				populates in list for each variable in loop
+				//How to display rank on top of the image
+
+			//Open another list
+			<ul.list-inline.list-unstyled.margin-top-10 small">	
+				<li><strong>Won: <span class="text-success">{{$image -> wins}}</span></strong></li>
+				<li><strong>Lost: <span class="text-success">{{$image -> losses}}</span></strong></li>
+				<li><strong>Score: <span class="text-success">{{$image -> score}}</span></strong></li>
+
+			</ul>
+			</li>
+			@endforeach
+			
+				//inside gamecontroller.php index() -> serves the game view
+				//pulls randomly 2 images(limit variable)
+				//if finds images, present game view with images variable
+					else direct to image url to upload images from images directory	
+				//We have to figure out here, how to display top 6 players
+				//pass in variable top6
+			</li>
+		</ul>
+		@endif	///Otherwise nothing else
+	</div>
+	 </div>
+_______________________________________________________________________________________________________________________________________________________
+
+Implement:
+
+Click an image
+below we get 6 images
+
+each image has rank on top, won,lost,score on bottom
+
+We can use jQuery to toggle some classes if rank changes, with animation etc
+Using Ajax we reduce the load on browser and client side
+
+Why process application as much as possible on server side
+Coz we cant establish environment and resources on client side
+optimize images
+________________________________________________________________________________________________________________________________________________________

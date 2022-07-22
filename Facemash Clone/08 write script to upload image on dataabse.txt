@@ -1,0 +1,265 @@
+database migration is done
+database is empty
+buttons are not functional
+
+task : press button -> take to page to upload photos
+____________________________________________________________________
+Routes.php
+
+//route called images attached to resourceful controller called ImageController
+Route::resource('images', 'ImageController')
+
+_____________________________________________________________________
+home.blade.php
+we have a button here   , this button hits the route images -> which in turn hits index() method of image controller (ImageController.php) //method is empty right now
+<a href="{{url('/images')}}"> class="btn btn-red">Upload Images</a> 
+
+________________________________________________________________________________________________________
+
+ImageController.php
+
+<?php namespace App/Http\Controllers;
+ 
+use App\Http\Controllers\Controller;
+use App\Game as Game;
+use App\Image as Image;
+
+public function__contruct()	//write constructor so everyone can access the application//we will invite everyone
+ {
+  $this->middleware('guest');
+}
+
+public function index(){
+// 	after applying Elo we do this
+	$expected = Game::expected(1550,1450)
+	$new_win= Game::win(1450, $expected);
+	$new_loss = Game::loss(1450, $expected);
+
+	dd($expected);
+	dd($new_win);
+	dd($new_loss);
+//
+	$images = Image::all0;
+	return  view('pages.upload', compact('image')); 		
+					//pass images variable from start game.Why? if you dont pass it from view , we wont be able to access it in upload.blade.php
+
+					
+					//where is this view? views-> pages-> upload.blade.php
+					//inside there is div which contains @include('partials.notifications')
+					//inside notifications.blade.php : there is session variable success   @if(Session::has('success'))
+						iff success it displays whatever message came from controller
+						similarly
+							if warning display warning
+						
+							if error display danger			@if(Session::has('error'))
+}
+//Similar to bootstrap 
+public  function update($id)
+{
+}
+
+public function destroy($id)
+{
+}
+
+public function stats($){	//after adding stats button in file #15	
+			//What does stats do? give all  the images
+	$images = image::all();
+	return view('pages.stats', compact('images'));	//serve pages.stats and pass collection
+}
+
+Inside upload.blade.php
+Objective: we are creating a button that fires image controller at store method
+script inside STORE METHOD looks for all the images in model directory
+
+
+<div c1ass="home">
+<div class="container">
+<div c1ass="row text-center vh-align">
+<div c1ass="c01-1g—12 col-md—12 col—sm-lz col—xs—12">
+@include('partials.notifications')
+<div c1ass="jumbotron bg-inherit text—white">
+<div c1ass="container">
+<h2 class="raleway">Paste Image assets inside public/1mg directory<lh2>
+{!! Form::open(['method' => 'POST', 'action' => 'ImageController@store', 'class' => 'form-horizontal', '
+enctype' => 'multipart/form—data'1) !!}		//can also give a url//can get content from url and post
+<button type="submit" c1ass="btn btn—cyan montserrat">UPLOAD</button>
+{!! Form::close() !!}
+@if(count($images))
+<p><a href="{{ ur1('game') }}" c1ass="btn btn—green montserrat text—uppercase">Start Game</a></p>
+				//if there are images in database -> a button start game will display	
+				  if no images , wont display the button
+				  -> start game button hits the route game
+@endif
+</div>
+</div> 
+
+}
+	
+
+public function create() {
+}
+
+public function store() { 
+  return "hello from store"
+//What will we do here? try to upload all the images
+
+}
+-------------------------------------------------------------------------------------------------------------------------
+What will the store method script do? 
+
+1) run  couple of checks whether file is jpg or png
+2) try to acess the models
+__________________________________________________________________________________________________________________________
+
+Implement
+if we click upload images variable 
+-> view gets opened up as below
+
+Paste image assets  inside public/img directory
+Upload button
+
+//on clicking upload button we get
+Hello from store
+
+//Means: button is hooked up to the method, its able to postusing the form created in upload.php
+
+__________________________________________________________________________________________________________________________
+lets try to upload images
+:
+Task: upload from IMG/models directory
+
+public function store() { 
+  return "hello from store"
+//What will we do here?
+$path = 'img/models';
+if(is_dir($path)) {
+//check
+	returnredirect() -> back() -> with('success', 'Images directory' '.$path' 'was successfully found.');
+//acccess and read directory 1 by 1(jpg/png)
+  pull our extension from file and check if jpg /png
+  check if file exists in database
+  do for each file
+  return success message back to view	
+	$handle = opendir($path);
+	dd($handle);	
+}
+else{
+	returnredirect() -> back() -> with('error', 'Images directory' '.$path' 'not found.');
+}
+}
+//Try clickign upload button
+shows: images directory img/models was successfully found
+
+
+//after adding
+//$handle = opendir($path);
+//	dd($handle); 
+after clickign upload it gives -> below:
+
+//what is this? directory
+stream resource @9 V
+wrapper_type: "plaznz1lo‘
+stream_type: 'dir'
+mode: 'r' ,
+unread_bytes: 0
+seekable: true
+timed_out: talnc
+blocked: true
+eof: false
+options: []
+
+_____________________________________________________________________________
+
+//now we have handle on directory what next?
+//run loop on each of file
+//if there is file in directory return true
+//if return false, close directory i.e close handle
+
+public function store() { 
+  return "hello from store"
+//What will we do here?
+$path = 'img/models';
+if(is_dir($path)) {
+//check
+	returnredirect() -> back() -> with('success', 'Images directory' '.$path' 'was successfully found.');
+//acccess and read directory 1 by 1(jpg/png)
+  pull our extension from file and check if jpg /png
+  check if file exists in database
+  do for each file
+  return success message back to view	
+	$handle = opendir($path);
+	while(($file = readdir($handle)) != false) {
+	     if($file !='.' && $file != '..' &&  $file !='.DS_Store')		// . and .. is sufficient for windows
+		//get extension
+			$extension  = pathinfo($file, PATHINFO_EXTENSIONS);
+		//allow particular type of files	
+			$options = ['jpg','png'];
+   
+		if(in_array($extension, $options)) {
+			//if extension is jpg, create title //we need title column in database 
+			//if some name have space remove the space and replace with hash
+   		$title = str_slug(basename($file, ".".$extension));	//create a title using string slug function
+		dd($title);	//die and dump //remove after testing and  use
+				//if all goes well, on clicking upload button ,  wallpaper-03.jpg file we will see in browser as wallpaper-03
+		$filename = $file;
+	
+		//Search the image with file
+		$image = Image:;where('filename', '=', $filename)-> get0;
+		dd($image);	//remove after testing and using
+
+		//if image not found
+		if (count $image) == 0 {
+		//pass below array //it will create the image
+			image:: create {
+			['title' =>$title,
+			'filename' => $filename,
+			]
+		else{
+		return redirect()->back()->with('error', $image->first0->filename. 'Already exist in the database.Consider changing the image');
+		continue;  //to skip to next one
+	}
+}
+}	
+ }
+}
+	closedir($handle)
+		returnredirect() -> back() -	> with('success', 'All Images were successfully loaded' '.$path' 'not found.');
+}
+else{
+	returnredirect() -> back() -	> with('error', 'Images directory' '.$path' 'not found.');
+}
+}
+//what bug here? if no file still closes directory and returnsscucess but its just prototype so chill
+__________________________________________________________________________________________________________________________________________________________________
+
+Implement
+click upload
+-> we see wallpaper-03
+
+but on doing 
+
+dd($image)
+returns an empty array
+because there is no data with this
+
+-------------------------------------------
+on final run after 
+	closedir($handle)
+		returnredirect() -> back() -	> with('success', 'All Images were successfully loaded' '.$path' 'not found.');
+
+click upload
+script runs good no error
+start game is visible
+
+go back to sequel database
+we will see lots of images with filename
+each image has default score 1500 according to databaes schema
+rank is 0 
+_____________________________________________________________________________
+go back to terminal
+facemash2022> pa migrate:rollback
+
+//database is fresh and empty again
+refresh again
+see 70 images in database

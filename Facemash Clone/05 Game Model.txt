@@ -1,0 +1,38 @@
+Game.php
+
+<?php namespace App>
+
+use Illuminate\Database\Eloquent\Model;
+
+class Game extends Model {
+
+   protected $table = 'games'
+	//games.php expects us to have table with name of games
+	//defining explicitly app wontbreak
+  //Specify what kind of parameters are most assignable
+
+  protected $fillable =  [
+	'winner',
+	'loser'
+  ]
+
+  //define your algorithm
+	//what will it calculate? expected score based on current score
+		finds winning score and losing score
+	public static function expected($) {
+
+	
+}
+	public static function win($) {
+
+	
+}
+	public static function loss($) {
+
+	
+}
+	public static function rank($) {
+
+	
+}
+}

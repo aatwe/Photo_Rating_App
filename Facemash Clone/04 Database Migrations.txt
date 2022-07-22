@@ -1,0 +1,45 @@
+create_games_table.php
+
+we add 2 fields
+
+public function up(){
+
+  Schema::create('games', functionBlueprint $table)
+$table->increments('id');
+$table->bigInteger('winner')->unsigned();
+$table->bigInteger('loser')->unsigned();
+$table->increments('id');
+$table->timestamps(); 
+
+}
+___________________________________________________
+create_images_table.php
+
+public function up(){
+
+//when we click an image i.e submitting a form, what we need is basically title filename and country
+
+$table->increments('id');
+$table->string('title')-> nullable();
+$table->string('filename');
+$table->string('country')->nullable;
+$table->string(''score')->unsigned()->default(1500);
+$table->integer('wins') ->unsigned() ->default(0);
+$table->integer('losses') ->unsigned() ->default(0);
+$table->integer('rank') ->unsigned() ->default(0);
+
+$table-> timestamps();
+} 
+
+____________________________________________________
+What kind of information is stored on images?
+title,filename,country,score(earnt when we play the game)
+
+What algo are we using? elo algorithm
+when new players start: rating 1500
+
+What is a win? everytime we click an image it is considered winner
+	other image = loser
+	against other image -> algo calculates new score with  a relationship accumalating each win
+
+_________________________________________________________________________________________________________________

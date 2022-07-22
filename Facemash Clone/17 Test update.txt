@@ -1,0 +1,14 @@
+click images
+
+open sequel
+
+there are wins,osses and rank
+scores will change
+at starting expectation is low so not much sense
+
+
+why rank not established
+
+after numerous clicks every pic will have some rank
+in database images will be ranked
+after 200 wins/losses it will be

@@ -1,0 +1,11 @@
+1)first screen
+with start game and upload button
+
+
+2) click start game -> see first image
+	hover image:  see
+			Won
+			Lost
+			Score
+	also 3 buttons on top
+		Play Game   View Statistics     Share

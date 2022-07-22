@@ -1,0 +1,221 @@
+we figure out how to take this input to controller method
+how to bind ittogether
+how to play algo and update data
+
+Objectives
+1) Try to send response to control method update()
+2) update() will calculate new rank using algo
+3)Save in database
+
+
+1) GameController.php
+//index() method is run -> we click image -> Update method is run  -> contructor runs again -> query again and image will change
+
+
+use App\Http\Controllers\Controller;
+
+use AppImage as Image;
+use Illuminate\Support\Facades\DB as DB;
+use class Illuminate\Http\Request as Request;
+
+class GameController extends Controller
+{
+
+	public function __construct()
+		{
+			$this->middleware('guest');
+
+		}
+	public function index(){	
+	//Try to pull 2 images randomly and display on view
+		$limit= 2;
+		//how to order? run db raw query , picks 2 records randomly
+		$images = Image::orderby(DB::raw('RAND()')) -> take($limit)get();
+		if(count($images)) {
+			return view('pages.game', compact('images'));
+	}
+			//else if no images and people want to play -> redirect to images
+		return redirect('images');
+	}
+
+	public function create(){
+	
+	}
+	public function store(){
+	}
+	public function show($id){
+	}
+	public function edit($id){
+	}
+	public function update(Request $request){		//where is the request coming from? the view,hence super global request object
+		dd($request);		//just writing this wont print output, why?
+				//Check your view i.e game view i.e game.blade.php
+					image is wrapped in anchor tag, anchor tag has class pickoption -> this doesnt take us to anything
+						so wont work
+				//Use jQuery to target this class pickOption in game.blade.php
+				//How to target class usign JQuery?
+					Use Event handler that will submit the form
+		
+	//After checking request log
+		//after you click image left/right
+			//in image we will query the database and store role in winner variable
+			//we will store winner and loser currnet values in variables
+		$winner =  Image::where('id', '=', $request->winner)->first();			
+		$loser =  Image::where('id', '=', $request->loser)->first();			
+
+		//Add 1 to no. of wins for the winner
+		$wins = $winner -> wins+1;
+				//takes expected function
+				//since we are acalculating for the winner. winner comes last parameter, loser first parameter
+		$winner_expected_score = Game::expected($loser->score, $winner->score);	//this gives us the winner expected score
+				//takes win function
+		$winner_new_score = Game::win( $winner->score, $winner_expected_score);	//gives us the new score for winner
+
+		$winner_rank = Game::rank( $winner_new_score, $wins, $winner->wins);	//gives us the rank rounded to nearest whole	 
+		//WE NOW HAVE ALL SET OF VARIABLES
+		//WE UPDATE THE DATABASE for winner
+			
+		$winner->update([			
+			'score' => $winner_new_score,
+			'wins' => $wins
+			'rank' => $winner_rank;
+
+
+		//Add 1  to no. of losses for the winner
+		$losses = $loser -> losses+1;
+			//since we are acalculating for the loser. loser comes last parameter, winner first parameter
+		$loser_expected_score = Game::expected($lwinner->score, $loser->score);	//this gives us the loser expected score
+				//takes win function
+		$loser_new_score = Game::win( $loser->score, $loser_expected_score);	//gives us the new score for loser
+		$loser_rank = Game::rank( $loser_new_score, $losses, $loser->wins);	//gives us the rank rounded to nearest whole
+
+		//WE NOW HAVE ALL SET OF VARIABLES
+		//WE UPDATE THE DATABASE loser
+			
+		$loser->update([			
+			'score' => $loser_new_score,
+			'wins' => $losses
+			'rank' => $loser_rank;
+
+
+//IN DATABSE WE ALSO HAVE GAME TABLE
+	//which shows who is the winner who is the loser
+	//we create a game
+		Game::create() ([
+			'winner' =>$request -> winner,
+			'loser'   =>$request -> loser,
+]);
+
+	return redirect() ->back()->with('success','Scores updated! Continue playing');
+
+);
+ 
+		}
+
+2) Go to script.blade.php
+	this is our all.js script file
+	inside script.blade.php we have all the jquery written for us
+
+All JQuery (necessary for Bootstrap's JavaScript pluginsl ~—:-
+<script type="text/javascript" src="{{ asset('js/a11.js') }}"></script>	//img->js->all.js
+<script type="text/javascript" src="{{ asset('js/bootstrap—filestyle.min.js') }}"></script>	//no need for this actually
+<script>window.j0uery || document.write('<script src="{{ asset('js/jquery—1.11.3.min.js') }}">\x3C/script<\/script>');</script>  	//reference jquery	//if has or else upload
+<script>window.Modernizr || document.write('<script src="{{ asset('js/modernizr-2.6.2.min.js') }}">\x3C/script<\/script>');</script>
+<script>
+$(document).ready(function() {}
+$(document).ready(function() {
+
+					//What does below code do?
+					1) target pick option selector
+					2) when an anchor tag with pick option class is clicked
+						//attach event handler 
+						 event.preventDefault();
+						//find the form in parents and submit the form of whichever button is clicked(first form or 2nd form(i.e left / right))
+					3) After being clicked toggle the classes
+
+//to check
+console.log("document loaded");
+$('.pickoption').click(function(event){
+event.preventDefau1t();
+$(this).parents('form:first').submit();
+$('#left').toggleC1ass('bounceInLeft bounceOutRight');
+// :,—x' I'M"; J . 'i:‘ 11:11 ‘ mg ' I‘ . r'er'rfrx‘efi at??- ‘1 'l‘ut:.n11‘ut%IIii.ei"? Ejrmw‘ufieTHT-rg gm, ' T .erjrlt'flea‘; I: "'1 , ligje' ii;
+$(‘#right').toggleC1ass('bounceInRight bounceOutLeft');
+H;
+H;
+</script>
+
+
+//Test
+in view console inbrowser -> shows document loaded 
+
+after
+
+shows error that request does not exist.why? its not able to import
+after
+use class Illuminate\Http\Request as Request;
+Try again
+
+Refresh
+What will we see? Whole request
+			a pass request //why pass request? we are updating column not adding new column
+				try opening server -> parameters: find all http headers
+				      request -> parameters
+					find 1) type of method: PATCH
+						token: CSRF //valdiated automatically	 //larvel will take care since we are not doing ajax
+							we are submitting direct http request to phpfault
+						winner
+						loser
+
+
+Test again
+
+Go back
+Click on right image
+check  request
+	request -> parameters another set of values
+					token
+					winner
+					loss 
+
+
+Now we update update method above in gamecontroller.php
+
+_________________________________________________________________________________________________________________
+
+Test update method
+public function update(Request $request){		//where is the request coming from? the view,hence super global request object
+		dd($request);		//just writing this wont print output, why?
+				//Check your view i.e game view i.e game.blade.php
+					image is wrapped in anchor tag, anchor tag has class pickoption -> this doesnt take us to anything
+						so wont work
+				//Use jQuery to target this class pickOption in game.blade.php
+				//How to target class usign JQuery?
+					Use Event handler that will submit the form
+		
+	//After checking request log
+		//after you click image left/right
+			//in image we will query the database and store role in winner variable
+			//we will store winner and loser currnet values in variables
+		$winner =  Image::where('id', '=', $request->winner)->first();			
+		$loser =  Image::where('id', '=', $request->loser)->first();			
+
+		//Add 1 to current no. of wins for the winner
+		$wins = $winner -> wins+1;
+		$losses = $winner -> losses+1;
+	
+		}
+
+Open Sequel pro
+we will se current structure of database for images table
+facemash2022 -> images
+we have
+score wins losses
+
+
+In algo we calculated expected score
+then we calculated new winning score
+	calculate new losing score
+	establish rank
+
+check update method for updating both for winner and loser and games table
